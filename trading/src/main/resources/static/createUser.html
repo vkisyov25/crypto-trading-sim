@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create User</title>
+</head>
+<body>
+<main>
+    <div id="createUser">
+        <label for="username">Username</label>
+        <input id="username" type="text">
+        <button type="button" onclick="saveUser()">Save</button>
+    </div>
+</main>
+</body>
+<script>
+    function saveUser(){
+        let username = document.getElementById("username").value
+
+        let obj = {
+            username:username,
+            balance:10000
+        }
+
+        fetch("user/create",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(obj)
+        })
+            .then(async (response) => {
+                const text = await response.text(); // <--- изчакваме текста
+                if (!response.ok) {
+                    throw new Error(text); // <--- сега подаваме съобщението правилно
+                }
+                alert(text);
+            })
+            .catch((error) => {
+                alert("Грешка: " + error.message); // ще покаже текст, не [object Promise]
+            });
+    }
+</script>
+</html>
