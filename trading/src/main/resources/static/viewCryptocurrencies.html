@@ -3,15 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <title>Cryptocurrencies</title>
+    <link rel="stylesheet" type="text/css" href="viewCryptocurrencies.css">
 </head>
 <body>
-<button type="button" onclick="logout()">Exit</button>
+<header>
+    <h3 id="title" style="display: none"></h3>
+    <button type="button" onclick="logout()">Exit</button>
+</header>
+<h2>Real-time crypto price</h2>
+<table id="cryptoTable">
+    <thead>
+    <tr>
+        <th>Symbol</th>
+        <th>Price for buy</th>
+        <th>Price for sell</th>
+        <th>Quantity</th>
+        <th></th>
+    </tr>
+    </thead>
+    <tbody id="cryptoBody">
+    </tbody>
+</table>
+
 
 <script>
     let username = localStorage.getItem("username")
-    const welcome = document.createElement("h3");
+    const welcome = document.getElementById("title");
     welcome.textContent = "Welcome " + username;
-    document.body.append(welcome);
+    welcome.style.display = "block";
     function logout() {
         localStorage.removeItem("userId");
         localStorage.removeItem("username");
@@ -19,6 +38,81 @@
         alert("Successfully exit");
         window.location.href = "login.html";
     }
+
+
+    const ws = new WebSocket("wss://ws.kraken.com/v2");
+
+    const trackedSymbols = [
+        "BTC/USD",
+        "ETH/USD",
+        "ADA/USD",  // Cardano
+        "SOL/USD"   // Solana
+    ];
+
+    ws.onopen = () => {
+        console.log("✅ WebSocket връзката е отворена");
+
+        ws.send(JSON.stringify({
+            method: "subscribe",
+            params: {
+                channel: "ticker",
+                symbol: trackedSymbols
+            },
+        }));
+    };
+
+    ws.onmessage = (event) => {
+        const msg = JSON.parse(event.data);
+
+        if (msg.channel === "ticker" && msg.type === "snapshot" && msg.data) {
+            msg.data.forEach((crypto) => {
+                console.log("Crypto object:", crypto);
+
+                const symbol = crypto.symbol;
+                const priceForBuy = crypto.ask;
+                const priceForSell = crypto.bid;
+                updateOrInsert(symbol, priceForBuy, priceForSell);
+            });
+        }
+
+        if (msg.channel === "ticker" && msg.type === "update" && msg.data) {
+            console.log("UPDATE RECEIVED:", msg);
+            msg.data.forEach((crypto) => {
+                const symbol = crypto.symbol;
+                const priceForBuy = crypto.ask;
+                const priceForSell = crypto.bid;
+
+                if (priceForBuy || priceForSell) {
+                    updateOrInsert(symbol, priceForBuy, priceForSell);
+                }
+            });
+        }
+
+
+
+    };
+
+    function updateOrInsert(symbol, priceForBuy, priceForSell) {
+        const tbody = document.getElementById("cryptoBody");
+        let row = document.getElementById(symbol);
+
+        if (!row) {
+            row = document.createElement("tr");
+            row.id = symbol;
+            row.innerHTML = `
+      <td>${symbol}</td>
+      <td class="priceForBuy">$${parseFloat(priceForBuy).toFixed(2)}</td>
+      <td class="priceForSell">$${parseFloat(priceForSell).toFixed(2)}</td>
+      <td><input type="number" class="input-quantity" step="0.1" min="0.1"></td>
+      <td><button type="button" onclick="buyCrypto(this,'${symbol}', ${priceForBuy})">Buy</button></td>
+    `;
+            tbody.appendChild(row);
+        } else {
+            row.querySelector(".priceForBuy").textContent = `$${parseFloat(priceForBuy).toFixed(2)}`;
+            row.querySelector(".priceForSell").textContent = `$${parseFloat(priceForSell).toFixed(2)}`;
+        }
+    }
+
 </script>
 </body>
 </html>
