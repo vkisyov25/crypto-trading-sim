@@ -1,0 +1,14 @@
+#loginMessage{
+    color: red;
+}
+#loginForm{
+    border: grey solid 5px;
+    margin:auto;
+    margin-top:400px;
+    min-width:300px;
+    max-width:350px;
+    background-color:gray
+}
+div,button{
+    background-color: aqua;
+}

@@ -24,4 +24,9 @@ public class UserService {
         }
         userDao.create(user);
     }
+
+    public User getUserByUsername(String username) throws SQLException {
+        return userDao.findByUsername(username);
+    }
+
 }
