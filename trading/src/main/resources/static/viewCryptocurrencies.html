@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cryptocurrencies</title>
+</head>
+<body>
+<button type="button" onclick="logout()">Exit</button>
+
+<script>
+    let username = localStorage.getItem("username")
+    const welcome = document.createElement("h3");
+    welcome.textContent = "Welcome " + username;
+    document.body.append(welcome);
+    function logout() {
+        localStorage.removeItem("userId");
+        localStorage.removeItem("username");
+
+        alert("Successfully exit");
+        window.location.href = "login.html";
+    }
+</script>
+</body>
+</html>
