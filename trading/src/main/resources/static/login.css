@@ -2,13 +2,17 @@
     color: red;
 }
 #loginForm{
-    border: grey solid 5px;
+    border: #f2a900 solid 5px;
+    border-radius:15px;
     margin:auto;
     margin-top:400px;
     min-width:300px;
     max-width:350px;
-    background-color:gray
+    background-color:#f2a900
 }
-div,button{
+div label{
+    font-size:25px;
+}
+div button{
     background-color: aqua;
 }
