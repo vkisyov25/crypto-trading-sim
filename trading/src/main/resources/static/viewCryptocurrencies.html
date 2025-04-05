@@ -10,8 +10,8 @@
     <h3 id="title" style="display: none"></h3>
     <button type="button" onclick="logout()">Exit</button>
 </header>
-<h2>Real-time crypto price</h2>
 <table id="cryptoTable">
+    <h2>Real-time crypto price</h2>
     <thead>
     <tr>
         <th>Symbol</th>
@@ -50,7 +50,7 @@
     ];
 
     ws.onopen = () => {
-        console.log("✅ WebSocket връзката е отворена");
+        console.log("WebSocket връзката е отворена");
 
         ws.send(JSON.stringify({
             method: "subscribe",
@@ -113,6 +113,43 @@
         }
     }
 
+    function buyCrypto(button, symbol, priceForBuy) {
+        const row = button.closest("tr"); // намира реда на бутона
+        const input = row.querySelector(".input-quantity"); // търси input само в този ред
+        const quantity = parseFloat(input.value);
+
+        let obj ={
+            "userId": parseInt(localStorage.getItem("userId")),
+            "symbol": symbol,
+            "quantity": quantity,
+            "type": "BUY",
+            "price": priceForBuy,
+            "profitLoss": null,
+
+        }
+
+        fetch("/transaction/buy",{
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(obj)
+        })
+            .then(async response =>{
+                console.log("response:",response)
+                if(!response.ok){
+                    throw new Error(await response.text());
+                }
+                return response.text();
+            })
+            .then(data =>{
+                console.log("data:",data);
+                alert(data);
+            })
+            .catch(err=>{
+                alert(err.message);
+            })
+    }
 </script>
 </body>
 </html>
