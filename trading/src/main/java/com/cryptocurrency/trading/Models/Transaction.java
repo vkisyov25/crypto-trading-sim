@@ -2,12 +2,14 @@ package com.cryptocurrency.trading.Models;
 
 import com.cryptocurrency.trading.Models.Enums.TransactionType;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,6 +22,6 @@ public class Transaction {
     private BigDecimal quantity;
     private BigDecimal price;
     private BigDecimal profitLoss;
-    private LocalDateTime localDateTime;
+    private Date localDateTime;
     private int userId;
 }
