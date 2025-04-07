@@ -20,12 +20,24 @@ public class TransactionController {
     }
 
     @PostMapping("/buy")
-    public ResponseEntity<?> buyCrypto(@RequestBody Transaction transaction) throws Exception {
+    public ResponseEntity<?> buyCrypto(@RequestBody Transaction transaction) {
         try {
             transactionService.buyCrypto(transaction);
             return ResponseEntity.ok().body("Successful transaction");
-        }catch (Exception e){
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
+        }
+    }
+
+
+    @PostMapping("/sell")
+    public ResponseEntity<?> sellCrypto(@RequestBody Transaction transaction) {
+        try {
+            transactionService.sellCrypto(transaction);
+            return ResponseEntity.ok("Successful transaction");
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+
         }
     }
 }
