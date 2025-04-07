@@ -4,7 +4,6 @@ import com.cryptocurrency.trading.Models.User;
 import com.cryptocurrency.trading.Service.AccountResetService;
 import com.cryptocurrency.trading.Service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,7 +49,7 @@ public class UserController {
     }
 
     @GetMapping("/reset/by/id/{userId}")
-    public ResponseEntity<?> resetUserAccount(@PathVariable int userId){
+    public ResponseEntity<?> resetUserAccount(@PathVariable int userId) {
         try {
             accountResetService.resetUserAccount(userId);
             return ResponseEntity.ok().body("User account is reset successfully");
