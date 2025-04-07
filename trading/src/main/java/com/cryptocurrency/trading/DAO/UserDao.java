@@ -40,7 +40,7 @@ public class UserDao {
         return false;
     }
 
-    public boolean subtractionFromBalance(int userId, BigDecimal amount) throws SQLException {
+    public boolean hasEnoughAndSubtractBalance(int userId, BigDecimal amount) throws SQLException {
         String sql = "UPDATE users SET balance = balance - ? WHERE id = ? AND balance >= ?";
 
         try (Connection conn = dataSource.getConnection();
@@ -72,6 +72,20 @@ public class UserDao {
             }
         }
         return null;
+    }
+
+    public void updateBalance(int userId, BigDecimal newBalance) throws SQLException {
+        String sql = "UPDATE users SET balance = balance + ? WHERE id = ?";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setBigDecimal(1, newBalance);
+            preparedStatement.setInt(2, userId);
+
+            preparedStatement.executeUpdate();
+
+        }
     }
 
 }
