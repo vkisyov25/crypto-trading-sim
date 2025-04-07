@@ -2,21 +2,20 @@ package com.cryptocurrency.trading.Service;
 
 import com.cryptocurrency.trading.DAO.UserDao;
 import com.cryptocurrency.trading.Models.User;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
 @Service
+@RequiredArgsConstructor
 public class UserService {
 
     private final UserDao userDao;
+    private final UserAssetService userAssetService;
+    /*private final TransactionService transactionService;*/
 
-    @Autowired
-    public UserService(UserDao userDao) {
-        this.userDao = userDao;
-    }
 
     public void createUser(User user) throws SQLException {
         if (userDao.userExists(user.getUsername())) {
@@ -35,5 +34,9 @@ public class UserService {
 
     public boolean hasEnoughAndSubtractBalance(int userId, BigDecimal amount) throws SQLException {
         return userDao.hasEnoughAndSubtractBalance(userId, amount);
+    }
+
+    public void resetBalance(int userId) throws Exception {
+        userDao.resetBalance(userId);
     }
 }
