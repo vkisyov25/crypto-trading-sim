@@ -10,7 +10,9 @@
     <h3 id="title" style="display: none"></h3>
     <nav>
         <ul>
+            <button type="button" onclick="viewUserInformation()">User Information</button>
             <button type="button" id="table-for-sale">Sell</button>
+            <button type="button" id="table-for-buy">Buy</button>
             <button type="button" onclick="logout()">Exit</button>
         </ul>
     </nav>
@@ -45,6 +47,8 @@
             <tbody id="userAssetsBody"></tbody>
         </table>
     </div>
+
+    <div id="userInformationDiv" style="display: none"></div>
 </main>
 
 <script>
@@ -274,12 +278,59 @@
         let table = document.getElementById("sellTable");
 
         if (table.style.display === "none") {
-            table.style.display = "block"
+            table.style.display = "block";
+            document.getElementById("userInformationDiv").style.display = "none";
         } else {
             table.style.display = "none"
         }
     });
 
+    function viewUserInformation() {
+        let userInformationDiv = document.getElementById("userInformationDiv");
+
+        if (userInformationDiv.style.display === "none") {
+            userInformationDiv.style.display = "block"
+            document.getElementById("cryptoTable").style.display = "none";
+            document.getElementById("sellTable").style.display = "none";
+        } else {
+            userInformationDiv.style.display = "none"
+        }
+
+        userInformationDiv.innerHTML = `
+            <button type="button" id="table-for-sale">History of transactions</button>
+            <button type="button" onclick="resetAccount()">Reset Account</button>
+       `;
+    }
+
+    function resetAccount() {
+        let userId = localStorage.getItem("userId");
+
+        fetch(`/user/reset/by/id/${userId}`)
+            .then(async response => {
+                if (!response.ok) {
+                    throw new Error(await response.text());
+                }
+                return response.text()
+            })
+            .then(data => {
+                alert(data);
+                loadUserAssets();
+            })
+            .catch(error => {
+                alert(error);
+            })
+    }
+
+    document.getElementById("table-for-buy").addEventListener("click", function () {
+        let table = document.getElementById("cryptoTable");
+
+        if (table.style.display === "none") {
+            table.style.display = "block";
+            document.getElementById("userInformationDiv").style.display = "none";
+        } else {
+            table.style.display = "none"
+        }
+    });
 </script>
 </body>
 </html>
