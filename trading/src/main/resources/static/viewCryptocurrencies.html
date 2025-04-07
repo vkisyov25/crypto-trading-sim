@@ -8,29 +8,51 @@
 <body>
 <header>
     <h3 id="title" style="display: none"></h3>
-    <button type="button" onclick="logout()">Exit</button>
+    <nav>
+        <ul>
+            <button type="button" id="table-for-sale">Sell</button>
+            <button type="button" onclick="logout()">Exit</button>
+        </ul>
+    </nav>
 </header>
-<table id="cryptoTable">
-    <h2>Real-time crypto price</h2>
-    <thead>
-    <tr>
-        <th>Symbol</th>
-        <th>Price for buy</th>
-        <th>Price for sell</th>
-        <th>Quantity</th>
-        <th></th>
-    </tr>
-    </thead>
-    <tbody id="cryptoBody">
-    </tbody>
-</table>
+<main>
+    <table id="cryptoTable">
+        <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Price for buy</th>
+            <th>Price for sell</th>
+            <th>Quantity</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="cryptoBody">
+        </tbody>
+    </table>
 
+
+    <div id="sellTable" style="display: none">
+        <table>
+            <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Price for sale</th>
+                <th>Your Quantity</th>
+                <th>Quantity for Sell</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="userAssetsBody"></tbody>
+        </table>
+    </div>
+</main>
 
 <script>
     let username = localStorage.getItem("username")
     const welcome = document.getElementById("title");
     welcome.textContent = "Welcome " + username;
     welcome.style.display = "block";
+
     function logout() {
         localStorage.removeItem("userId");
         localStorage.removeItem("username");
@@ -61,6 +83,10 @@
         }));
     };
 
+    // глобални променливи
+    let firstUpdateReceived = false;
+    let currentPrices = {};
+
     ws.onmessage = (event) => {
         const msg = JSON.parse(event.data);
 
@@ -72,23 +98,41 @@
                 const priceForBuy = crypto.ask;
                 const priceForSell = crypto.bid;
                 updateOrInsert(symbol, priceForBuy, priceForSell);
+                currentPrices[symbol] = {
+                    bid: crypto.bid,
+                    ask: crypto.ask
+                };
+                const td = document.querySelector(`.sell-price[data-symbol="${symbol}"]`);
+                if (td) {
+                    td.textContent = `$${parseFloat(priceForSell).toFixed(2)}`;
+                }
+                if (!firstUpdateReceived) {
+                    firstUpdateReceived = true;
+                    loadUserAssets(); //извикваме я тука, защото вече тук имам валидни данни
+                }
             });
         }
 
+
         if (msg.channel === "ticker" && msg.type === "update" && msg.data) {
-            console.log("UPDATE RECEIVED:", msg);
             msg.data.forEach((crypto) => {
                 const symbol = crypto.symbol;
                 const priceForBuy = crypto.ask;
                 const priceForSell = crypto.bid;
+                currentPrices[symbol] = {
+                    bid: crypto.bid,
+                    ask: crypto.ask
+                };
+                const td = document.querySelector(`.sell-price[data-symbol="${symbol}"]`);
+                if (td) {
+                    td.textContent = `$${parseFloat(priceForSell).toFixed(2)}`;
+                }
 
                 if (priceForBuy || priceForSell) {
                     updateOrInsert(symbol, priceForBuy, priceForSell);
                 }
             });
         }
-
-
 
     };
 
@@ -103,7 +147,7 @@
       <td>${symbol}</td>
       <td class="priceForBuy">$${parseFloat(priceForBuy).toFixed(2)}</td>
       <td class="priceForSell">$${parseFloat(priceForSell).toFixed(2)}</td>
-      <td><input type="number" class="input-quantity" step="0.1" min="0.1"></td>
+      <td><input type="number" class="input-quantity" step="0.01" min="0.01"></td>
       <td><button type="button" onclick="buyCrypto(this,'${symbol}', ${priceForBuy})">Buy</button></td>
     `;
             tbody.appendChild(row);
@@ -118,7 +162,7 @@
         const input = row.querySelector(".input-quantity"); // търси input само в този ред
         const quantity = parseFloat(input.value);
 
-        let obj ={
+        let obj = {
             "userId": parseInt(localStorage.getItem("userId")),
             "symbol": symbol,
             "quantity": quantity,
@@ -128,28 +172,114 @@
 
         }
 
-        fetch("/transaction/buy",{
+        fetch("/transaction/buy", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(obj)
         })
-            .then(async response =>{
-                console.log("response:",response)
-                if(!response.ok){
+            .then(async response => {
+                console.log("response:", response)
+                if (!response.ok) {
                     throw new Error(await response.text());
                 }
                 return response.text();
             })
-            .then(data =>{
-                console.log("data:",data);
+            .then(data => {
+                loadUserAssets();
+                document.querySelectorAll(".input-quantity").forEach(input => input.value = "");
                 alert(data);
             })
-            .catch(err=>{
+            .catch(err => {
                 alert(err.message);
             })
     }
+
+
+    let userAssets = [];
+
+
+    function loadUserAssets() {
+        let userId = parseInt(localStorage.getItem("userId"));
+        fetch(`/user-assets/${userId}`)
+            .then(res => res.json())
+            .then(data => {
+                userAssets = data;
+                updateUserAssets();
+            })
+            .catch(err => alert(err.message));
+    }
+
+    function updateUserAssets() {
+        const tbody = document.getElementById("userAssetsBody");
+        tbody.innerHTML = "";
+
+        userAssets.forEach(asset => {
+            const symbol = asset.symbol;
+            const price = currentPrices[symbol]?.bid;
+
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${symbol}</td>
+                <td class="sell-price" data-symbol="${symbol}"> ${price ? `$${parseFloat(price).toFixed(2)}` : 'Loading...'} </td>
+                <td>${parseFloat(asset.quantity).toFixed(4)}</td>
+                <td><input type="number" class="input-quantity-for-sale" min="0.01" max="${asset.quantity}" step="0.01"></td>
+                <td> <button onclick="sellCrypto(this, '${symbol}', ${price})">Sell</button> </td>
+            `;
+            tbody.appendChild(row);
+        });
+    }
+
+    function sellCrypto(button, symbol, price) {
+        const row = button.closest("tr");
+        const input = row.querySelector(".input-quantity-for-sale");
+        const quantity = parseFloat(input.value);
+
+        if (!quantity || quantity <= 0) {
+            alert("Invalid quantity. It will have to be more than 0");
+            return;
+        }
+
+        let sellObj = {
+            userId: parseInt(localStorage.getItem("userId")),
+            symbol: symbol,
+            quantity: quantity,
+            type: "SELL",
+            price: price,
+            profitLoss: null
+        };
+
+        fetch("/transaction/sell", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify(sellObj)
+        })
+            .then(async response => {
+                if (!response.ok) {
+                    throw new Error(await response.text());
+                }
+                return response.text();
+            })
+            .then(data => {
+                alert(data);
+                loadUserAssets();
+            })
+            .catch(error => {
+                alert(error.message);
+            })
+    }
+
+    document.getElementById("table-for-sale").addEventListener("click", function () {
+        let table = document.getElementById("sellTable");
+
+        if (table.style.display === "none") {
+            table.style.display = "block"
+        } else {
+            table.style.display = "none"
+        }
+    });
+
 </script>
 </body>
 </html>
