@@ -46,4 +46,8 @@ public class UserAssetService {
     public void remove(int userId, String symbol) throws SQLException {
         userAssetDao.remove(userId, symbol);
     }
+
+    public void removeUserAssetsByUserId(int userId) throws Exception {
+        userAssetDao.removeUserAssetsByUserId(userId);
+    }
 }

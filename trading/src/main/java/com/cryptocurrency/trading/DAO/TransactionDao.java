@@ -48,4 +48,14 @@ public class TransactionDao {
         }
         return buySummaryDto;
     }
+
+    public int removeTransactionsByUserId(int userId) throws SQLException {
+        String sql = "DELETE FROM transactions WHERE user_id =?";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, userId);
+            return preparedStatement.executeUpdate();
+        }
+    }
 }

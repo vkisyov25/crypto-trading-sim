@@ -95,4 +95,8 @@ public class TransactionService {
         BigDecimal balance = currentSellPrice.multiply(currentQuantity).add(profitOrLoss);
         userService.updateBalance(userId, balance);
     }
+
+    public void removeTransactionsByUserId(int userId) throws Exception {
+        transactionDao.removeTransactionsByUserId(userId);
+    }
 }

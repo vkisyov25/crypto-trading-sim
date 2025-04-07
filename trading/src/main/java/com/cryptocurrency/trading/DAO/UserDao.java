@@ -79,12 +79,21 @@ public class UserDao {
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
             preparedStatement.setBigDecimal(1, newBalance);
             preparedStatement.setInt(2, userId);
-
             preparedStatement.executeUpdate();
 
+        }
+    }
+
+    public int resetBalance(int userId) throws SQLException {
+        String sql = "UPDATE users SET balance = 10000 WHERE id = ?";
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setInt(1, userId);
+
+            //връщаме броя на засегнатите редове
+            return preparedStatement.executeUpdate();
         }
     }
 
