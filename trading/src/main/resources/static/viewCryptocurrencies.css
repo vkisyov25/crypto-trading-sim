@@ -29,3 +29,8 @@ header {
 header nav button {
     margin-left: 20px;
 }
+
+#userInformationDiv {
+    display: inline;
+    margin: 200px;
+}
