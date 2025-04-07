@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cryptocurrencies</title>
+    <link rel="stylesheet" type="text/css" href="/css/viewCryptocurrencies.css">
+</head>
+<body>
+<header>
+    <h3 id="title" style="display: none"></h3>
+    <nav>
+        <ul>
+            <button type="button" onclick="viewUserInformation()">User Information</button>
+            <button type="button" id="table-for-sale">Sell</button>
+            <button type="button" id="table-for-buy">Buy</button>
+            <button type="button" onclick="logout()">Exit</button>
+        </ul>
+    </nav>
+</header>
+<main>
+    <table id="cryptoTable">
+        <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Price for buy</th>
+            <th>Price for sell</th>
+            <th>Quantity</th>
+            <th></th>
+        </tr>
+        </thead>
+        <tbody id="cryptoBody">
+        </tbody>
+    </table>
+
+
+    <div id="sellTable" style="display: none">
+        <table>
+            <thead>
+            <tr>
+                <th>Symbol</th>
+                <th>Price for sale</th>
+                <th>Your Quantity</th>
+                <th>Quantity for Sell</th>
+                <th>Action</th>
+            </tr>
+            </thead>
+            <tbody id="userAssetsBody"></tbody>
+        </table>
+    </div>
+
+    <div id="userInformationDiv" style="display: none"></div>
+
+    <table id="transactionTable" style="display: none">
+        <thead>
+        <tr>
+            <th>Symbol</th>
+            <th>Type</th>
+            <th>Quantity</th>
+            <th>Price</th>
+            <th>Profit/Loss</th>
+            <th>Date/Time</th>
+        </tr>
+        </thead>
+        <tbody id="transactionBody">
+
+        </tbody>
+    </table>
+</main>
+
+<script src="/js/viewCryptocurrencies.js"></script>
+
+</body>
+</html>

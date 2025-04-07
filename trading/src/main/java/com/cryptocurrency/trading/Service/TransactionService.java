@@ -10,7 +10,9 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.sql.SQLException;
 import java.util.Date;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -98,5 +100,9 @@ public class TransactionService {
 
     public void removeTransactionsByUserId(int userId) throws Exception {
         transactionDao.removeTransactionsByUserId(userId);
+    }
+
+    public List<Transaction> getTransactionsByUserId(int userId) throws SQLException {
+        return transactionDao.findTransactionsByUserId(userId);
     }
 }

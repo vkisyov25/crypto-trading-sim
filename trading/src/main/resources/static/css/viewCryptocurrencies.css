@@ -30,7 +30,7 @@ header nav button {
     margin-left: 20px;
 }
 
-#userInformationDiv {
-    display: inline;
-    margin: 200px;
+#userInformationDiv button{
+    padding: 20px;
+    margin-left: 20px;
 }
