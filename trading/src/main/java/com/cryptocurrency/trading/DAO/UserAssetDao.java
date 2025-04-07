@@ -120,4 +120,13 @@ public class UserAssetDao {
     }
 
 
+    public void removeUserAssetsByUserId(int userId) throws SQLException {
+        String sql = "DELETE FROM user_assets WHERE user_id = ?";
+
+        try (Connection conn = dataSource.getConnection();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ps.executeUpdate();
+        }
+    }
 }
