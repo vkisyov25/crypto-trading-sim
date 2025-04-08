@@ -39,6 +39,9 @@ It allows users to:
   - Complete transaction history (BUY/SELL)
 - **SQL Script** – Used to create the necessary schema without relying on any ORM tools.
 
+## ER diagram
+![image](https://github.com/user-attachments/assets/6e3fc6ce-81f8-4235-a956-586651e36501)
+
 
 ## Features
 
@@ -55,9 +58,9 @@ All BUY and SELL operations are saved in the database. The application keeps a f
 Users can reset their account at any time. This action restores the balance to the initial $10,000, removes all currently held assets, and deletes the transaction history — providing a clean slate for new simulations.
 
 
-## 📢 API Endpoints
+## API Endpoints
 
-### ✨ User Endpoints
+### User Endpoints
 - `POST /user/create`  
   Registers a new user with a unique username and initializes their balance.
 
@@ -70,11 +73,11 @@ Users can reset their account at any time. This action restores the balance to t
 - `GET /user/reset/by/id/{id}`  
   Resets the user's account by restoring the balance to the initial value and clearing all assets and transactions.
 
-### 🌐 UserAsset Endpoints
+### UserAsset Endpoints
 - `GET /user-assets/{userId}`  
   Returns a list of all cryptocurrencies held by a specific user, including quantities.
 
-### 💳 Transaction Endpoints
+### Transaction Endpoints
 - `POST /transaction/buy`  
   Simulates the purchase of cryptocurrency. Deducts the total cost from the user’s balance and records the transaction.
 
@@ -85,21 +88,21 @@ Users can reset their account at any time. This action restores the balance to t
   Returns the full transaction history for a user, including each transaction’s type, quantity, price, and timestamp.
 
 
-## 📊 Screenshots
+## Screenshots
 
 Below are key screens that illustrate the functionality of the application:
 
-- ✅ **Live Crypto Prices:**  
+- **Live Crypto Prices:**  
   A dynamic table displaying real-time cryptocurrency prices for the top 20 coins.
 ![image](https://github.com/user-attachments/assets/33c2d179-cdde-4824-8bdc-3e8e8d704d2e)
 
-- ✅ **Buy/Sell Interface:**  
+- **Buy/Sell Interface:**  
   Buy
   ![image](https://github.com/user-attachments/assets/248765f5-dee9-4889-b6db-8c13e2ce3231)
   Sell
   ![image](https://github.com/user-attachments/assets/cad2321a-4c1a-4dac-b4b2-51af9f672df4)
 
-- ✅ **Transaction History:**  
+- **Transaction History:**  
   A detailed table showing the user's full transaction history, including symbol, type (BUY/SELL), quantity, price, profit/loss, and timestamp.
   ![image](https://github.com/user-attachments/assets/8931f0e0-b273-4de7-b735-89b9f8343d48)
 
