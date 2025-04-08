@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.sql.SQLException;
 
 @RestController
@@ -56,5 +57,12 @@ public class UserController {
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
+    }
+
+    @GetMapping("/balance/{userId}")
+    public ResponseEntity<?> getUserBalance(@PathVariable int userId) throws SQLException {
+        BigDecimal balance = userService.getBalance(userId);
+        return ResponseEntity.ok(balance);
+
     }
 }
