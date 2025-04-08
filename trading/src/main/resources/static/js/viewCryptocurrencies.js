@@ -137,6 +137,7 @@ function buyCrypto(button, symbol, priceForBuy) {
             return response.text();
         })
         .then(data => {
+            viewUserBalance();
             loadUserAssets();
             document.querySelectorAll(".input-quantity").forEach(input => input.value = "");
             alert(data);
@@ -212,6 +213,7 @@ function sellCrypto(button, symbol, price) {
             return response.text();
         })
         .then(data => {
+            viewUserBalance();
             alert(data);
             loadUserAssets();
         })
@@ -264,6 +266,7 @@ function resetAccount() {
         .then(data => {
             alert(data);
             loadUserAssets();
+            viewUserBalance()
         })
         .catch(error => {
             alert(error);
@@ -322,3 +325,23 @@ function viewTransactions() {
             alert(error);
         })
 }
+
+function viewUserBalance() {
+    userId = localStorage.getItem("userId");
+
+    fetch(`/user/balance/${userId}`)
+        .then(async response => {
+            if (!response.ok) {
+                throw new Error(await response.text());
+            }
+            return response.text();
+        })
+        .then(balance => {
+            document.getElementById("balanceDisplay").textContent = `Balance: $${balance}`;
+        })
+        .catch(error => {
+            alert("error.message");
+        });
+}
+
+window.onload = viewUserBalance();
