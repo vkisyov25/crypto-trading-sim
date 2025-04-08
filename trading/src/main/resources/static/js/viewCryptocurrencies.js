@@ -15,10 +15,26 @@ function logout() {
 const ws = new WebSocket("wss://ws.kraken.com/v2");
 
 const trackedSymbols = [
-    "BTC/USD",
-    "ETH/USD",
+    "BTC/USD",  // Bitcoin
+    "ETH/USD",  // Ethereum
+    "USDT/USD", // Tether
+    "BNB/USD",  // Binance Coin
+    "SOL/USD",  // Solana
+    "XRP/USD",  // Ripple
+    "USDC/USD", // USD Coin
     "ADA/USD",  // Cardano
-    "SOL/USD"   // Solana
+    "AVAX/USD", // Avalanche
+    "DOGE/USD", // Dogecoin
+    "TRX/USD",  // TRON
+    "DOT/USD",  // Polkadot
+    "LINK/USD", // Chainlink
+    "MATIC/USD",// Polygon
+    "LTC/USD",  // Litecoin
+    "BCH/USD",  // Bitcoin Cash
+    "UNI/USD",  // Uniswap
+    "XLM/USD",  // Stellar
+    "ATOM/USD", // Cosmos
+    "ETC/USD"   // Ethereum Classic
 ];
 
 ws.onopen = () => {
