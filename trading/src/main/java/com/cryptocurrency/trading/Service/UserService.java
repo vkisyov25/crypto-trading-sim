@@ -39,4 +39,8 @@ public class UserService {
     public void resetBalance(int userId) throws Exception {
         userDao.resetBalance(userId);
     }
+
+    public BigDecimal getBalance(int userId) throws SQLException {
+        return userDao.findBalance(userId);
+    }
 }

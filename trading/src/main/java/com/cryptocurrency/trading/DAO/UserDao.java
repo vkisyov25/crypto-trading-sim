@@ -96,5 +96,21 @@ public class UserDao {
             return preparedStatement.executeUpdate();
         }
     }
+    public BigDecimal findBalance(int userId) throws SQLException {
+        String sql = "SELECT balance FROM users WHERE id = ?";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+
+            preparedStatement.setInt(1, userId);
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                return resultSet.getBigDecimal("balance");
+            } else {
+                throw new SQLException("User not found with ID: " + userId);
+            }
+        }
+    }
 
 }
