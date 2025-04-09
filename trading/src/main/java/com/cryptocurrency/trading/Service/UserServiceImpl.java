@@ -17,6 +17,7 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
+
     public void createUser(User user, BindingResult bindingResult) throws SQLException {
         userValidator(user, bindingResult);
         userDao.create(user);
@@ -27,6 +28,7 @@ public class UserServiceImpl implements UserService {
             bindingResult.rejectValue("username", "error.username", "Username already exists");
         }
     }
+
 
 
     @Override
