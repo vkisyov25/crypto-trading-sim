@@ -245,6 +245,7 @@ document.getElementById("table-for-sale").addEventListener("click", function () 
         table.style.display = "block";
         document.getElementById("userInformationDiv").style.display = "none";
         document.getElementById("transactionTable").style.display = "none";
+        document.getElementById("cryptoTable").style.display = "none";
     } else {
         table.style.display = "none"
     }
@@ -296,6 +297,7 @@ document.getElementById("table-for-buy").addEventListener("click", function () {
         table.style.display = "block";
         document.getElementById("userInformationDiv").style.display = "none";
         document.getElementById("transactionTable").style.display = "none";
+        document.getElementById("sellTable").style.display = "none";
     } else {
         table.style.display = "none"
     }

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Create User</title>
+    <link rel="stylesheet" href="/css/createUser.css">
 </head>
 <body>
 <main>
@@ -10,37 +11,65 @@
         <h2>Registration</h2>
         <label for="username">Username</label>
         <input id="username" type="text">
+        <br>
+        <span class="error-message" id="error-username"></span>
+        <br>
         <button type="button" onclick="saveUser()">Save</button>
     </div>
 </main>
 </body>
 <script>
-    function saveUser(){
+    function saveUser() {
         let username = document.getElementById("username").value
 
         let obj = {
-            username:username,
-            balance:10000
+            username: username,
+            balance: 10000
         }
 
-        fetch("user/create",{
+        fetch("/user/create", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(obj)
         })
-            .then(async (response) => {
-                const text = await response.text();
-                if (!response.ok) {
-                    throw new Error(text);
-                }
-                alert(text);
-                window.location.href ="login.html"
-            })
+            .then(response => {
+                console.log(response);
+                return response.json()
+            }).then(data => {
+            console.log(data);
+            console.log(data.errors)
+            if (data.errors) {
+                displayErrors(data.errors);
+            } else {
+                alert(data.message);
+                window.location.href = "/html/login.html";
+            }
+        })
             .catch((error) => {
                 alert("Error: " + error.message);
             });
+
+
+    }
+
+    function displayErrors(errors) {
+        // Изчистваме предишните грешки
+        document.querySelectorAll(".error-message").forEach(span => {
+            span.textContent = "";
+        });
+
+        // Обхождаме грешките и ги показваме под съответните полета
+        Object.keys(errors).forEach(field => {
+            const errorSpan = document.getElementById(`error-${field}`);
+            if (errorSpan) {
+                errorSpan.textContent = Array.isArray(errors[field])
+                    ? errors[field].join(" ") // Обединява грешките в един текст
+                    : errors[field];
+                errorSpan.style.color = "red";
+            }
+        });
     }
 </script>
 </html>
