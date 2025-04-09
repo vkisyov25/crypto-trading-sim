@@ -1,0 +1,29 @@
+DROP TABLE IF EXISTS transactions;
+DROP TABLE IF EXISTS user_assets;
+DROP TABLE IF EXISTS users;
+
+CREATE TABLE users (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    balance DECIMAL(12, 2) DEFAULT 10000.00
+);
+
+CREATE TABLE user_assets (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    symbol VARCHAR(10) NOT NULL,
+    quantity DECIMAL(20, 10) NOT NULL,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
+
+CREATE TABLE transactions (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    user_id INT NOT NULL,
+    symbol VARCHAR(10) NOT NULL,
+    type ENUM('BUY', 'SELL') NOT NULL,
+    quantity DECIMAL(20, 10) NOT NULL,
+    price DECIMAL(12, 2) NOT NULL,
+    profit_loss DECIMAL(12, 2),
+    date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+);
