@@ -4,6 +4,7 @@ import com.cryptocurrency.trading.DAO.UserDao;
 import com.cryptocurrency.trading.Models.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.validation.BindingResult;
 
 import java.math.BigDecimal;
 import java.sql.SQLException;
@@ -16,12 +17,19 @@ public class UserServiceImpl implements UserService {
 
 
     @Override
-    public void createUser(User user) throws SQLException {
-        if (userDao.userExists(user.getUsername())) {
-            throw new IllegalArgumentException("Потребител с това име вече съществува!");
-        }
+
+    public void createUser(User user, BindingResult bindingResult) throws SQLException {
+        userValidator(user, bindingResult);
         userDao.create(user);
     }
+
+    public void userValidator(User user, BindingResult bindingResult) throws SQLException {
+        if (userDao.userExists(user.getUsername())) {
+            bindingResult.rejectValue("username", "error.username", "Username already exists");
+        }
+    }
+
+
 
     @Override
     public User getUserByUsername(String username) throws SQLException {

@@ -24,6 +24,11 @@ public class TransactionServiceImpl implements TransactionService {
     @Override
     @Transactional
     public void buyCrypto(Transaction transaction) throws Exception {
+
+        if (transaction.getQuantity().compareTo(BigDecimal.ZERO) <= 0) {
+            throw new Exception("Quantity must be greater than 0");
+        }
+
         //Изчисляваме цената на покупката
         BigDecimal price = new BigDecimal(transaction.getPrice().toString());
         BigDecimal quantity = new BigDecimal(transaction.getQuantity().toString());

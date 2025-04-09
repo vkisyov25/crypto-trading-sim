@@ -2,11 +2,17 @@ package com.cryptocurrency.trading.Service;
 
 import com.cryptocurrency.trading.Models.User;
 
+import org.springframework.validation.BindingResult;
+
+
 import java.math.BigDecimal;
 import java.sql.SQLException;
 
 public interface UserService {
-    void createUser(User user) throws SQLException;
+
+    void createUser(User user, BindingResult bindingResult) throws SQLException;
+
+    void userValidator(User user, BindingResult bindingResult) throws SQLException;
 
     User getUserByUsername(String username) throws SQLException;
 
